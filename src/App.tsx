@@ -106,62 +106,60 @@ const App: FC = () => {
       </section>
 
       <section className="video-section">
-        <div className="video-wrapper">
-          <video
-            src={state.selectedVideo.url}
-            poster={state.selectedVideo.thumb}
-            controls
-            autoPlay
-            onTimeUpdate={(event) => {
-              dispatch(
-                actions.setElapsedTime(
-                  state.selectedVideo,
-                  event.currentTarget.currentTime
-                )
-              );
-            }}
-            onEnded={() => {
-              const { selectedVideo, videos } = state;
+        <video
+          src={state.selectedVideo.url}
+          poster={state.selectedVideo.thumb}
+          controls
+          autoPlay
+          onTimeUpdate={(event) => {
+            dispatch(
+              actions.setElapsedTime(
+                state.selectedVideo,
+                event.currentTarget.currentTime
+              )
+            );
+          }}
+          onEnded={() => {
+            const { selectedVideo, videos } = state;
 
-              // Find next, non-complete video
+            // Find next, non-complete video
 
-              // Current index = 2 (last)
-              // Is 3 done? Yes
-              // Continue...is 4 done? Yes
-              // Continue...is 5 done? No. Return video #5
+            // Current index = 2 (last)
+            // Is 3 done? Yes
+            // Continue...is 4 done? Yes
+            // Continue...is 5 done? No. Return video #5
 
-              const nextIndex = selectedVideo.index + 1;
+            const nextIndex = selectedVideo.index + 1;
 
-              // if (nextIndex >= state.videos.length) {
-              //   const nextVideo = state.videos.find(v => !videoIsComplete(v))
-              // } else {
-              //   const nextVideo =
-              // }
+            // if (nextIndex >= state.videos.length) {
+            //   const nextVideo = state.videos.find(v => !videoIsComplete(v))
+            // } else {
+            //   const nextVideo =
+            // }
 
-              // if (nextVideo && !videoIsComplete(nextVideo)) {
-              //   dispatch(actions.selectVideo(nextVideo));
-              // }
+            // if (nextVideo && !videoIsComplete(nextVideo)) {
+            //   dispatch(actions.selectVideo(nextVideo));
+            // }
 
-              // const currentVideoIndex = state.videos.findIndex(
-              //   (v) => v.url === selectedVideo.url
-              // );
+            // const currentVideoIndex = state.videos.findIndex(
+            //   (v) => v.url === selectedVideo.url
+            // );
 
-              // const nextVideoIndex =
-              //   currentVideoIndex === videos.length - 1
-              //     ? 0
-              //     : currentVideoIndex + 1;
-              // const nextVideo = state.videos.find(
-              //   (_, index) => nextVideoIndex === index
-              // );
+            // const nextVideoIndex =
+            //   currentVideoIndex === videos.length - 1
+            //     ? 0
+            //     : currentVideoIndex + 1;
+            // const nextVideo = state.videos.find(
+            //   (_, index) => nextVideoIndex === index
+            // );
 
-              // if (!nextVideo) {
-              //   return;
-              // }
+            // if (!nextVideo) {
+            //   return;
+            // }
 
-              // dispatch(actions.selectVideo(nextVideo));
-            }}
-          />
-        </div>
+            // dispatch(actions.selectVideo(nextVideo));
+          }}
+        />
       </section>
     </main>
   );
