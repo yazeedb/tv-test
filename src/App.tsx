@@ -21,6 +21,7 @@ const initialState: State = {
 
 const actions = {
   selectVideo: (video: VideoWithProgress) => ({ type: 'SELECT_VIDEO', video }),
+
   setElapsedTime: (video: VideoWithProgress, time: number) => ({
     type: 'SET_ELAPSED_TIME',
     video,
@@ -56,7 +57,7 @@ const reducer = (state = initialState, action: any): State => {
 
           return {
             ...v,
-            progress: Math.max(v.progress, progress),
+            progress: Math.max(v.progress, newProgress),
           };
         }),
       };
@@ -122,42 +123,12 @@ const App: FC = () => {
           onEnded={() => {
             const { selectedVideo, videos } = state;
 
-            // Find next, non-complete video
+            const nextIndex =
+              selectedVideo.index === videos.length - 1
+                ? 0
+                : selectedVideo.index + 1;
 
-            // Current index = 2 (last)
-            // Is 3 done? Yes
-            // Continue...is 4 done? Yes
-            // Continue...is 5 done? No. Return video #5
-
-            const nextIndex = selectedVideo.index + 1;
-
-            // if (nextIndex >= state.videos.length) {
-            //   const nextVideo = state.videos.find(v => !videoIsComplete(v))
-            // } else {
-            //   const nextVideo =
-            // }
-
-            // if (nextVideo && !videoIsComplete(nextVideo)) {
-            //   dispatch(actions.selectVideo(nextVideo));
-            // }
-
-            // const currentVideoIndex = state.videos.findIndex(
-            //   (v) => v.url === selectedVideo.url
-            // );
-
-            // const nextVideoIndex =
-            //   currentVideoIndex === videos.length - 1
-            //     ? 0
-            //     : currentVideoIndex + 1;
-            // const nextVideo = state.videos.find(
-            //   (_, index) => nextVideoIndex === index
-            // );
-
-            // if (!nextVideo) {
-            //   return;
-            // }
-
-            // dispatch(actions.selectVideo(nextVideo));
+            dispatch(actions.selectVideo(videos[nextIndex]));
           }}
         />
       </section>
