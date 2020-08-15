@@ -70,12 +70,16 @@ const App: FC = () => {
           onEnded={() => {
             const { selectedVideo, videos } = state;
 
-            const nextIndex =
-              selectedVideo.index === videos.length - 1
-                ? 0
-                : selectedVideo.index + 1;
+            const videosAfter = videos.slice(selectedVideo.index + 1);
+            const videosBefore = videos.slice(0, selectedVideo.index);
 
-            dispatch(actions.selectVideo(videos[nextIndex]));
+            const nextVideoToPlay = videosAfter
+              .concat(videosBefore)
+              .find(isNotComplete);
+
+            if (nextVideoToPlay) {
+              dispatch(actions.selectVideo(nextVideoToPlay));
+            }
           }}
         />
       </section>
@@ -83,8 +87,8 @@ const App: FC = () => {
   );
 };
 
-const videoIsComplete = (video: VideoWithProgress) =>
-  video.secondsWatched >= video.totalSeconds;
+const isNotComplete = (video: VideoWithProgress) =>
+  video.secondsWatched < video.totalSeconds;
 
 const calculateTotalTime = (videos: VideoWithProgress[]) =>
   videos.reduce((total, v) => total + v.totalSeconds, 0);
