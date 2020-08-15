@@ -9,7 +9,7 @@ interface State {
 
 const uiData: VideoWithProgress[] = mockData.map((v, index) => ({
   ...v,
-  progress: 0,
+  secondsWatched: 0,
   totalSeconds: v.minutes * 60 + v.seconds,
   index,
 }));
@@ -22,10 +22,10 @@ const initialState: State = {
 const actions = {
   selectVideo: (video: VideoWithProgress) => ({ type: 'SELECT_VIDEO', video }),
 
-  setElapsedTime: (video: VideoWithProgress, time: number) => ({
+  setSecondsWatched: (video: VideoWithProgress, secondsWatched: number) => ({
     type: 'SET_ELAPSED_TIME',
     video,
-    time,
+    secondsWatched,
   }),
 };
 
@@ -34,19 +34,11 @@ const reducer = (state = initialState, action: any): State => {
     case 'SELECT_VIDEO':
       return {
         ...state,
-        selectedVideo:
-          state.selectedVideo.url === action.video.url
-            ? state.selectedVideo
-            : action.video,
+        selectedVideo: action.video,
       };
 
     case 'SET_ELAPSED_TIME': {
-      const { video, time } = action;
-
-      const progress = Math.floor((time / video.totalSeconds) * 100);
-
-      // Prevent overflowing past 100%
-      const newProgress = Math.min(100, progress);
+      const { video, secondsWatched } = action;
 
       return {
         ...state,
@@ -57,7 +49,7 @@ const reducer = (state = initialState, action: any): State => {
 
           return {
             ...v,
-            progress: Math.max(v.progress, newProgress),
+            secondsWatched: Math.max(v.secondsWatched, secondsWatched),
           };
         }),
       };
@@ -97,7 +89,13 @@ const App: FC = () => {
 
                 <span className="spacer">-</span>
 
-                <span className="progress">{v.progress}%</span>
+                <span className="progress">
+                  {Math.min(
+                    100,
+                    Math.round((v.secondsWatched / v.totalSeconds) * 100)
+                  )}
+                  %
+                </span>
 
                 <p className="video-time">{formatTime(v.totalSeconds)}</p>
               </li>
@@ -111,10 +109,16 @@ const App: FC = () => {
           src={state.selectedVideo.url}
           poster={state.selectedVideo.thumb}
           controls
+          // TODO: Unmute when you're done
+          muted
           autoPlay
+          onLoadedData={(event) => {
+            event.currentTarget.currentTime =
+              state.selectedVideo.secondsWatched;
+          }}
           onTimeUpdate={(event) => {
             dispatch(
-              actions.setElapsedTime(
+              actions.setSecondsWatched(
                 state.selectedVideo,
                 event.currentTarget.currentTime
               )
@@ -137,7 +141,7 @@ const App: FC = () => {
 };
 
 const videoIsComplete = (video: VideoWithProgress) =>
-  video.progress >= video.totalSeconds;
+  video.secondsWatched >= video.totalSeconds;
 
 const calculateTotalTime = (videos: VideoWithProgress[]) =>
   videos.reduce((total, v) => total + v.totalSeconds, 0);

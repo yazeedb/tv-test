@@ -7,7 +7,7 @@ export interface Video {
 }
 
 export interface VideoWithProgress extends Video {
-  progress: number;
+  secondsWatched: number;
   totalSeconds: number;
   index: number;
 }
