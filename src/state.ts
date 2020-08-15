@@ -18,7 +18,10 @@ export const initialState: State = {
 };
 
 export const actions = {
-  selectVideo: (video: VideoWithProgress) => ({ type: 'SELECT_VIDEO', video }),
+  selectVideo: (video: VideoWithProgress) => ({
+    type: 'SELECT_VIDEO',
+    video,
+  }),
 
   setSecondsWatched: (video: VideoWithProgress, secondsWatched: number) => ({
     type: 'SET_ELAPSED_TIME',
